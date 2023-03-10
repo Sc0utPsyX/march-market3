@@ -61,7 +61,9 @@ angular.module('market').controller('indexController', function ($rootScope, $sc
                 if (response.data.token) {
                     $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
                     $localStorage.marchMarketUser = {username: $scope.user.username, token: response.data.token};
-
+                    $http
+                        .post('http://localhost:5555/cart/api/v1/cart/' + $localStorage.marchMarketGuestCartId + '/merge')
+                        .setRequestHeader("username", $scope.user.username);
                     $scope.user.username = null;
                     $scope.user.password = null;
 
