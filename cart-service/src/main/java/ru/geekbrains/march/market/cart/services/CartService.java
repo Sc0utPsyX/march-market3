@@ -23,10 +23,34 @@ public class CartService {
         return (Cart)redisTemplate.opsForValue().get(cartId);
     }
 
+    public void mergeCarts(String guestCartId, String userNameCartId){
+        if (!redisTemplate.hasKey(guestCartId)){
+            return;
+        }
+        Cart guestCart = (Cart) redisTemplate.opsForValue().get(guestCartId);
+        if (!redisTemplate.hasKey(userNameCartId)){
+            redisTemplate.opsForValue().set(userNameCartId, guestCart);
+            return;
+        }
+        guestCart.getItems().forEach(cartItem -> {
+            addToCart(userNameCartId, cartItem.getProductId(), cartItem.getQuantity());
+        });
+        clearCart(guestCartId);
+    }
+
     public void addToCart(String cartId, Long productId) {
         execute(cartId, cart -> {
             ProductDto p = productServiceIntegration.findById(productId);
             cart.add(p);
+        });
+    }
+
+    public void addToCart(String cartId, Long productId, int quantity) {
+        execute(cartId, cart -> {
+            ProductDto p = productServiceIntegration.findById(productId);
+            for (int i = 0; i < quantity; i++) {
+                cart.add(p);
+            }
         });
     }
 
