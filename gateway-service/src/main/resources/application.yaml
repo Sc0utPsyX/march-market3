@@ -22,7 +22,8 @@ spring:
           filters:
             - StripPrefix=1
             - PrefixPath=/market-core
-            - JwtAuthFilter
+            - SecurityConfiguration
+#            - JwtAuthFilter
         - id: cart-service
           uri: http://localhost:8190
           predicates:
@@ -30,20 +31,37 @@ spring:
           filters:
             - StripPrefix=1
             - PrefixPath=/market-cart
-            - JwtAuthFilter
-        - id: auth-service
-          uri: http://localhost:8187
-          predicates:
-            - Path=/auth/**
-          filters:
-            - StripPrefix=1
-            - PrefixPath=/market-auth
-            - JwtAuthFilter
-
-jwt:
-  secret: h4f8093h4f983yhrt9834hr0934hf0hf493g493gf438rh438th34g34g
-
-#logging:
+            - SecurityConfiguration
+#            - JwtAuthFilter
+#        - id: auth-service
+#          uri: http://localhost:8187
+#          predicates:
+#            - Path=/auth/**
+#          filters:
+#            - StripPrefix=1
+#            - PrefixPath=/market-auth
+#            - JwtAuthFilter
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://192.168.1.36:8080/realms/market_march
+          jwk-set-uri: http://192.168.1.36:8080/realms/market_march/protocol/openid-connect/certs
+      client:
+        provider:
+          my-keycloak-provider:
+            issuer-uri: http://192.168.1.36:8080/realms/market_march
+        registration:
+          keycloak-spring-gateway-client:
+            provider: my-keycloak-provider
+            client-id: spring-gateway-client
+            client-secret: S1mC3WNJ9Olef4qTLkhRsetbij8YdFEk
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/keycloak'
+#jwt:
+#  secret: h4f8093h4f983yhrt9834hr0934hf0hf493g493gf438rh438th34g34g
+#
+##logging:
 #  level:
 #    reactor:
 #      netty: TRACE
