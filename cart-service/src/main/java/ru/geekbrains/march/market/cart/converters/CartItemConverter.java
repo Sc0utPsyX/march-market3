@@ -7,6 +7,12 @@ import ru.geekbrains.march.market.cart.utils.CartItem;
 @Component
 public class CartItemConverter {
     public CartItemDto entityToDto(CartItem c) {
-        return new CartItemDto(c.getProductId(), c.getProductTitle(), c.getQuantity(), c.getPricePerProduct(), c.getPrice());
+        return new CartItemDto.Builder()
+                .withProductId(c.getProductId())
+                .withProductTitle(c.getProductTitle())
+                .withPrice(c.getPrice())
+                .withPricePerProduct(c.getPricePerProduct())
+                .withQuantity(c.getQuantity())
+                .build();
     }
 }
