@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.geekbrains.march.market.api.ProductDto;
 import ru.geekbrains.march.market.core.exceptions.ResourceNotFoundException;
 import ru.geekbrains.march.market.core.entities.Product;
+import ru.geekbrains.march.market.core.observers.CartItemsObserver;
 import ru.geekbrains.march.market.core.repositories.ProductRepository;
 
 import java.util.List;
@@ -18,12 +19,14 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
+    private final CartItemsObserver cartItemsObserver;
 
     public Page<Product> findAll(int page, int pageSize, Specification<Product> specification) {
         return productRepository.findAll(specification, PageRequest.of(page, pageSize));
     }
 
     public void deleteById(Long id) {
+        cartItemsObserver.update(id);
         productRepository.deleteById(id);
     }
 
