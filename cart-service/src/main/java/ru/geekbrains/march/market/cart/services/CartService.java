@@ -7,6 +7,10 @@ import ru.geekbrains.march.market.api.ProductDto;
 import ru.geekbrains.march.market.cart.integrations.ProductServiceIntegration;
 import ru.geekbrains.march.market.cart.utils.Cart;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 @Service
@@ -67,4 +71,17 @@ public class CartService {
         action.accept(cart);
         redisTemplate.opsForValue().set(cartId, cart);
     }
+    public void removeItemFromCart(Long productId) {
+        Set<String> redisKeys = redisTemplate.keys("*");
+        List<String> keysList = new ArrayList<>();
+        Iterator<String> iterator = redisKeys.iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            keysList.add(key);
+        }
+        for (String cartId: keysList) {
+            removeFromCart(cartId, productId);
+        }
+    }
+
 }

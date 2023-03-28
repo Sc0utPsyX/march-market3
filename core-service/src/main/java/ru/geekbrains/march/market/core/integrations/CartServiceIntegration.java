@@ -27,4 +27,13 @@ public class CartServiceIntegration {
                 .toBodilessEntity()
                 .block();
     }
+
+    public void removeProductFromCart(Long productId) {
+        cartServiceWebClient.post()
+                .uri("/api/v1/cart/updateProduct")
+                .header("productId", String.valueOf(productId))
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
 }
